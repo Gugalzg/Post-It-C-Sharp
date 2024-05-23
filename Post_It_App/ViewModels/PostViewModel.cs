@@ -19,4 +19,5 @@ public class PostViewModel : PostView {
 
     public string Description => _post.Description;
 
+    public object Items { get; internal set; }
 }

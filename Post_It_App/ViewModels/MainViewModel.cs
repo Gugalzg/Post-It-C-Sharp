@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Channels;
 using System.Windows.Input;
@@ -22,6 +23,7 @@ public class MainViewModel : ViewModelBase {
             AddPostViewModel post = new();
 
             PostViewModel result = await ShowDialog.Handle(post);
+            DeletePostCommand = ReactiveCommand.Create<PostViewModel>(DeletePost);
         });
 
         this.WhenAnyValue(x => x.SearchText).Subscribe(DoSearch!);
@@ -47,6 +49,7 @@ public class MainViewModel : ViewModelBase {
         get => _selectedPost;
         set => this.RaiseAndSetIfChanged(ref _selectedPost, value);
     }
+    public ReactiveCommand<PostViewModel, Unit> DeletePostCommand { get; private set; }
 
     private void DoSearch(string? input) {
 
@@ -70,6 +73,14 @@ public class MainViewModel : ViewModelBase {
         }
 
     }
+    public void DeletePost(PostViewModel postViewModel)
+    {
+    if (postViewModel != null)
+    {
+        PostManager.Instance.DeletePost(postViewModel.Id);
+        SearchResults.Remove(postViewModel);
+    }
+   }
 
 
 }

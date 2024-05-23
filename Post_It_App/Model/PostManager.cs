@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ public class PostManager {
         }
     }
 
-    public void DeletePost(int id) {
+    public void DeletePost(int id, int itemIndex) {
         var post = _posts.FirstOrDefault(p => p.Id == id);
         if (post != null) {
             _posts.Remove(post);
@@ -48,5 +49,12 @@ public class PostManager {
     public List<PostItem> SearchPostsReturn(string searchTerm) {
         return _posts.FindAll(p => p.Title.Contains(searchTerm) || p.Description.Contains(searchTerm));
     }
+
+    internal void DeletePost(int id)
+{
+    // Chama o método DeletePost passando o id e o índice adequado
+    DeletePost(id, _posts.IndexOf(_posts.FirstOrDefault(p => p.Id == id)));
+}
+
 }
 
